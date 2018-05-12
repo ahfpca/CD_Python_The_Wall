@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <!-- Bootstrap -->
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+    <title>CodingDojo Wall</title>
+</head>
+<body>
+    <br>
+    <br>
+    <div class="container">
+        <div class="row">
+            <div class="col-5">
+                <h1 class="row">CodingDojo Wall</h1>
+            </div>
+            <div class="col-3"></div>
+            <div class="row col-4">
+                <p>{{ user["user_name"] }}</p>
+                <form class="" action="/logout" method="post">                    
+                    <input class="inline-btn" type="submit" value="logout">
+                </form>
+            </div>
+        </div>
+        {% with errors = get_flashed_messages(category_filter=["error"]) %}
+            {% if errors %}
+                {% for message in errors %}
+                    <h4 class="row error">{{ message }}</h4>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        {% with errors = get_flashed_messages(category_filter=["message"]) %}
+            {% if errors %}
+                {% for message in errors %}
+                    <h4 class="row message">{{ message }}</h4>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        <br>
+        <!-- Post A Message -->
+        <div class="row card">
+            <form class="msg-box" action="/post_message" method="post">
+                <h4 class="">Post a message</h4>
+                <textarea class="" name="user_msg" id="user_msg" cols="" rows="3" class="row"></textarea>
+                <br>
+                <input class="float-right" type="submit" value="Post the message">
+            </form>
+        </div>
+        <!-- Posted Messages -->
+        <div class="row">
+            {% for post in posts: %}
+                <div class="msg-title">{{ post.user_name }} - {{ post.cDate }}</div>
+                <!-- 
+                <form class="edit-btn" action="/view_comments" method="post">                    
+                    <input type="hidden" name="post_uniq">
+                    <input class="inline-btn" type="submit" value="View Comments">
+                </form> 
+                -->
+                <!-- 
+                <form class="edit-btn" action="/edit_post" method="post">                    
+                    <input type="hidden" name="post_uniq">
+                    <input class="inline-btn" type="submit" value="Edit">
+                </form>
+                -->
+                {% if post.user_id == user.user_id: %}
+                    <form class="edit-btn" action="/delete_post" method="post">                    
+                        <input type="hidden" name="message_id" value="{{ post.message_id }}">
+                        <input class="inline-btn" data-confirm="Are you sure you want to delete?" type="submit" value="Delete">
+                    </form>
+                {% endif %}
+                <div class="msg-body">{{ post.user_msg }}</div>
+                {% if post.cmtCount == 0: %}
+                    <div class="comment row">
+                        <div class="col-3"></div>
+                        <div class="col-9">
+                            <div class="row">
+                                <p class="cmt-title"></p>
+                            </div>
+                            <div class="cmt-body"></div>
+                            <br>
+                            <div class="row card">
+                                <form class="msg-box" action="/post_comment" method="post">
+                                    <h4 class="">Post a comment</h4>
+                                    <input type="hidden" name="message_id" value="{{ post.message_id }}">
+                                    <textarea class="" name="user_cmt" id="user_cmt" cols="" rows="3" class="row"></textarea>
+                                    <br>
+                                    <input class="float-right" type="submit" value="Post the comment">
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                {% else: %}
+                    {% set loopCount = [0] %}
+                    {% for comment in comments: %}
+                        {% if comment.message_id == post.message_id: %}
+                            {% if loopCount.append(loopCount.pop() + 1) %}
+                            {% endif %}
+                            <div class="comment row">
+                                <div class="col-3"></div>
+                                <div class="col-9">
+                                    <div class="row">
+                                        <p class="cmt-title">{{ loopCount[0] }}- {{ comment.user_name }} - {{ comment.cDate }}</p>
+                                        <!-- 
+                                        <form class="edit-btn" action="/edit_cmt" method="post">                    
+                                            <input type="hidden" name="comment_uniq">
+                                            <input class="inline-btn" type="submit" value="Edit">
+                                        </form>
+                                        -->
+                                        {% if comment.user_id == user.user_id: %}
+                                            <form class="edit-btn" action="/delete_cmt" method="post">                    
+                                                <input type="hidden" name="comment_id" value="{{ comment.comment_id }}">
+                                                <input class="inline-btn" data-confirm="Are you sure you want to delete?" type="submit" value="Delete">
+                                            </form>
+                                        {% endif %}
+                                    </div>
+                                    <div class="cmt-body">{{ comment.user_cmnt }}</div>
+                                    <br>
+                                    {% if loopCount[0] == post.cmtCount: %}
+                                        <div class="row card">
+                                            <form class="msg-box" action="/post_comment" method="post">
+                                                <h4 class="">Post a comment</h4>
+                                                <input type="hidden" name="message_id" value="{{ post.message_id }}">
+                                                <textarea class="" name="user_cmt" id="user_cmt" cols="" rows="3" class="row"></textarea>
+                                                <br>
+                                                <input class="float-right" type="submit" value="Post the comment">
+                                            </form>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/jquery-3.3.1.slim.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/popper.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('input[data-confirm]').click(function(ev) {
+                var $form = $(this).closest('form');
+                if (!$('#dataConfirmModal').length) {
+                    $('body').append('<div class="modal" id="dataConfirmModal" style="display: none; z-index: 1050;"><div class="modal-dialog"><div class="modal-content"><div class="modal-body" id="confirmMessage"></div><div class="modal-footer"><button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button><a class="btn btn-primary" id="dataConfirmOK">OK</a></div></div></div></div>');
+                } 
+                $('#dataConfirmModal').find('.modal-body').text($(this).attr('data-confirm'));
+                $('#dataConfirmOK').click(function() {
+                    $form.trigger('submit');
+                });
+                $('#dataConfirmModal').modal({show:true});
+                return false;
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,75 @@
+.error {
+    color: red;
+    margin-top: -8px;
+}
+
+.message {
+    color: green;
+}
+
+.red {
+    color: red;
+}
+
+label {
+    margin-bottom: 0px;
+}
+
+.inline-btn {
+    margin-left: 10px;
+}
+
+.edit-btn {
+    margin-left: 10px;
+    margin-top: 18px;
+}
+
+h3 {
+    margin-left: -15px;
+}
+
+body {
+    background-color: rgb(22, 19, 16);
+    color: rgb(133, 113, 93);
+}
+
+input {
+    background-color: rgb(22, 19, 16);
+    color: rgb(133, 113, 93);
+    border-color: darkgray;
+}
+
+textarea {
+    width: 100%;
+}
+
+.msg-box {
+    padding: 10px;
+}
+
+.msg-title {
+    margin-top: 20px;
+    font-weight: bold;
+}
+
+.msg-body {
+    text-align: justify;
+    text-justify: inter-word;
+    width: 100%;
+}
+
+.cmt-title {
+    margin-top: 20px;
+    margin-bottom: 0px;
+    font-weight: bold;
+}
+
+.cmt-body {
+    text-align: justify;
+    text-justify: inter-word;
+    margin-left: -15px;
+}
+
+.comment {
+    width: 100%;
+}
